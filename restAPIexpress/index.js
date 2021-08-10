@@ -53,7 +53,7 @@ app.get('/spaces', (req, res) => {
             case stateSpaces.INUSE:
                 res.status(200).send(espacios.filter(e => e.state == stateSpaces.INUSE))
             default:
-                res.status(404).send({
+                res.status(409).send({
                     state: spaces,
                     text: 'state invalido',
 
