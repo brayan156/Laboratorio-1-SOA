@@ -10,7 +10,8 @@ var cors = require('cors');
 const app = express();
 const PORT = 8080;
 
-app.use(cors())
+app.use(cors({
+    origin: 'http://localhost:3000'}))
 app.use(express.json());
 
 //se restringe el content-type a solo json
@@ -140,7 +141,7 @@ app.get('/reservations', (req, res) => {
 //metodo post de reservation: en el body se debe enviar el atributo placa:"numero de placa"
 app.post('/reservations', (req, res) => {
     const placa = req.body.placa;
-    if (!tipo) {
+    if (!placa) {
         res.status(400).send({
             respuesta: "debe enviar la placa del vehiculo como placa:"
         })
