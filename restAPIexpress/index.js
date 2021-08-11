@@ -122,7 +122,7 @@ app.delete('/spaces/:id', (req, res) => {
         res.status(409).send({
             respuesta: "espacio no encontrado"
         })
-    } else if (espacios[index].state == stateSpaces.INUSE) {
+    } else if (espacios[index].id == stateSpaces.INUSE) {
         res.status(409).send({
             respuesta: "el espacio esta ocupado, no se puede eliminar"
         })
@@ -173,7 +173,10 @@ app.delete('/reservations/:id', (req, res) => {
             respuesta: "espacio no encontrado"
         })
     } else {
+
         reservaciones.splice(index, 1)
+        let index_espacio = espacios.findIndex(e => e.id == id)
+        espacios[index_espacio].state = stateSpaces.FREE
         res.status(200).send(reservaciones.filter(e => e.idEspacio == id))
     }
 })
