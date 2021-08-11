@@ -5,22 +5,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Table, Button, Container, Modal, ModalBody, ModalHeader, FormGroup, ModalFooter, InputGroup } from "reactstrap";
 
 
-let reservacion = {
-  placa: Number,
-  hora: String,
-  id_espacio: Number
-}
-
-let espacio = {
-  id: Number,
-  estado: String,
-  dato: String
-}
-
-let reservaciones = []
-
-let espacios = []
-
 class App extends React.Component {
   state = {
     data: { reservaciones: [], espacios: [] },
