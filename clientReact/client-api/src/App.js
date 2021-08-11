@@ -338,7 +338,7 @@ class App extends React.Component {
           <ModalBody>
             <FormGroup>
               <label>
-                Description:
+                Type:
               </label>
               <input
                 className="form-control"
@@ -392,7 +392,7 @@ class App extends React.Component {
           <ModalBody>
             <FormGroup>
               <label>
-                Description:
+                License Plate:
               </label>
               <input
                 className="form-control"
