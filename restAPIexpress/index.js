@@ -175,6 +175,7 @@ app.delete('/reservations/:id', (req, res) => {
     }
 })
 
+//se envia el error 405 para los metodos no contemplados aun
 app.all('/reservations', (req, res) => {
     res.status(405).send({
         respuesta:"metodo no permitido"
