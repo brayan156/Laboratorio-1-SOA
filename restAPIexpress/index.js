@@ -15,7 +15,7 @@ app.use(express.json());
 
 //se restringe el content-type a solo json
 app.use(function (req, res, next) {
-    if (req.headers['content-type'] != "application/json" & req.headers['content-type']) {
+    if (req.headers['content-type'] != "application/json" && req.headers['content-type']) {
         res.status(406).send({
             respuesta: "content-type incorrecto, solo se acepta application/json"
         })
