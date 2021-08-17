@@ -215,13 +215,69 @@ app.all('/spaces/:id', (req, res) => {
  */
 function paginatedResults(object){
     return (req, res, next) => {
+        var objectTmp = object;
+
         const page = parseInt(req.query.page)
         const limit = parseInt(req.query.limit)
 
+        const fields = req.query;
+        console.log(fields);
         const startIndex = (page-1)*limit
         const endIndex = page *limit
 
         var result = {}
+
+        if (fields.placa){
+            objectTmp =  object.filter(function(obj) {
+                return obj.placa == req.query.placa;
+            });
+        }
+
+        if (fields.hora){
+            objectTmp =  object.filter(function(obj) {
+                return obj.hora == req.query.hora;
+            });
+        }
+
+        if (fields.idEspacio){
+            if (fields.idEspacio.gte){
+                objectTmp =  object.filter(function(obj) {
+                return obj.idEspacio >= parseInt(fields.idEspacio.gte); 
+            });} 
+        }
+
+        if (fields.idEspacio){
+            if (fields.idEspacio.lte){
+                objectTmp =  object.filter(function(obj) {
+                return obj.idEspacio <= parseInt(fields.idEspacio.lte); 
+            });} 
+        }
+
+        if (fields.state){
+            objectTmp =  object.filter(function(obj) {
+                return obj.state == req.query.state;
+            });
+        }
+
+        if (fields.tipo){
+            objectTmp =  object.filter(function(obj) {
+                return obj.tipo == req.query.tipo;
+            });
+        }
+
+        if (fields.id){
+            if (fields.id.gte){
+                objectTmp =  object.filter(function(obj) {
+                return obj.id >= parseInt(fields.id.gte); 
+            });} 
+        }
+
+        if (fields.id){
+            if (fields.id.lte){
+                objectTmp =  object.filter(function(obj) {
+                return obj.id <= parseInt(fields.id.lte); 
+            });} 
+        }
 
         if (endIndex < object.length){
             result.next = {
@@ -238,9 +294,9 @@ function paginatedResults(object){
         }
 
         if (!page || !limit){
-            result.results = object
+            result.results = objectTmp
         } else {
-            result.results = object.slice(startIndex, endIndex);
+            result.results = objectTmp.slice(startIndex, endIndex);
         }
         res.paginatedResults = result
         next()
