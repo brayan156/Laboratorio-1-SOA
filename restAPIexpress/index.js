@@ -13,7 +13,14 @@ var cors = require('cors');
 const app = express();
 const PORT = 8080;
 
-app.use(cors({
+const https= require('https')
+const path = require('path')
+const fs =require ('fs')
+
+
+
+
+app.use(cors({
     origin: 'http://localhost:3000'}))
 app.use(express.json());
 
@@ -220,8 +227,10 @@ function paginatedResults(object){
     return (req, res, next) => {
         var objectTmp = object;
 
+
         const page = parseInt(req.query.page)
         const limit = parseInt(req.query.limit)
+
 
         const fields = req.query;
         console.log(fields);
@@ -305,6 +314,19 @@ function paginatedResults(object){
         next()
     }
 }
+
+const sslServer = https.createServer(
+    {
+        key: fs.readFileSync("./certificado/cert.key"),
+        cert: fs.readFileSync("./certificado/cert.pem")
+    },
+    app
+)
+
+sslServer.listen(
+    3443,
+    () => console.log("secure listening in https://localhost:3443")
+)
 
 const options = {
     definition: {
