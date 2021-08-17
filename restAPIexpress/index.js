@@ -6,6 +6,9 @@ const tipo_espacios = require('./Enums/tipo_espacios.js')
 
 const { response } = require('express');
 const express = require('express');
+var bodyParser = require("body-parser");
+var swaggerJsdoc = require("swagger-jsdoc");
+var swaggerUi = require("swagger-ui-express");
 var cors = require('cors');
 const app = express();
 const PORT = 8080;
@@ -302,6 +305,40 @@ function paginatedResults(object){
         next()
     }
 }
+
+const options = {
+    definition: {
+      openapi: "3.0.0",
+      info: {
+        title: "LogRocket Express API with Swagger",
+        version: "0.1.0",
+        description:
+          "This is a simple CRUD API application made with Express and documented with Swagger",
+        license: {
+          name: "MIT",
+          url: "https://spdx.org/licenses/MIT.html",
+        },
+        contact: {
+          name: "LogRocket",
+          url: "https://logrocket.com",
+          email: "info@email.com",
+        },
+      },
+      servers: [
+        {
+          url: "http://localhost:8080/api",
+        },
+      ],
+    },
+    apis: ["./routes/books.js"],
+  };
+  
+  const specs = swaggerJsdoc(options);
+  app.use(
+    "/api-docs",
+    swaggerUi.serve,
+    swaggerUi.setup(specs)
+  );
 
 app.listen(
     PORT,
