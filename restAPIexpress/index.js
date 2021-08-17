@@ -223,20 +223,11 @@ app.all('/spaces/:id', (req, res) => {
 function paginatedResults(object){
     return (req, res, next) => {
         var objectTmp = object;
-const sslServer = https.createServer(
-    {
-        key: fs.readFileSync("./certificado/cert.key"),
-        cert: fs.readFileSync("./certificado/cert.pem")
-    },
-    app
-)
+
 
         const page = parseInt(req.query.page)
         const limit = parseInt(req.query.limit)
-sslServer.listen(
-    3443,
-    () => console.log("secure listening in https://localhost:3443")
-)
+
 
         const fields = req.query;
         console.log(fields);
@@ -320,6 +311,19 @@ sslServer.listen(
         next()
     }
 }
+
+const sslServer = https.createServer(
+    {
+        key: fs.readFileSync("./certificado/cert.key"),
+        cert: fs.readFileSync("./certificado/cert.pem")
+    },
+    app
+)
+
+sslServer.listen(
+    3443,
+    () => console.log("secure listening in https://localhost:3443")
+)
 
 app.listen(
     PORT,
