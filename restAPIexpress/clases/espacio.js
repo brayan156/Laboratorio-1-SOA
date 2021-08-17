@@ -1,3 +1,7 @@
+
+
+
+
 class espacio {
 
     constructor(tipo) {

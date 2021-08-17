@@ -89,6 +89,29 @@ app.get('/spaces/:id', (req, res) => {
 
 
 //metodo post de spaces: recibe en el body el tipo del objeto de la forma tipo:"tipo de espacio"
+
+/**
+ * @swagger
+ * /spaces:
+ *   post:
+ *     description: agrega un nuevo espacio
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               tipo:
+ *                 type: string
+ *                 description: tipo de espacio ejemplo regular, preferencial, profesor.
+ *                 example: regular
+ *     responses:
+ *       201:
+ *         description: el espacio se crea exitosamente
+ *       400:
+ *         description: se debe enviar un tipo
+ */
 app.post('/spaces', (req, res) => {
     const tipo = req.body.tipo;
     if (!tipo) {
@@ -332,27 +355,18 @@ const options = {
     definition: {
       openapi: "3.0.0",
       info: {
-        title: "LogRocket Express API with Swagger",
+        title: "Parqueo TEC",
         version: "0.1.0",
         description:
-          "This is a simple CRUD API application made with Express and documented with Swagger",
-        license: {
-          name: "MIT",
-          url: "https://spdx.org/licenses/MIT.html",
-        },
-        contact: {
-          name: "LogRocket",
-          url: "https://logrocket.com",
-          email: "info@email.com",
-        },
+          "API de consulta de spacios y reservacion el parqueo del TEC"
       },
       servers: [
         {
-          url: "http://localhost:8080/api",
+              url: "https://localhost:3443",
         },
       ],
     },
-    apis: ["./routes/books.js"],
+    apis: ["./index.js"],
   };
   
   const specs = swaggerJsdoc(options);
