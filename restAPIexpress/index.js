@@ -44,20 +44,24 @@ espacios.push(so)
 
 var reservaciones = []
 reservaciones.push(new reservacion (4,"2A"))
+reservaciones.push(new reservacion (5,"3A"))
 
 
 
 //metodos aceptados con sus respectivos errores y respuestas
-app.get('/spaces', (req, res) => {
+app.get('/spaces', paginatedResults(espacios),(req, res) => {
     const spaces = req.query.state;
+    var espaciosTmp = res.paginatedResults
+    // var espaciosTmp = espacios
+
     if (!spaces) {
-        res.status(200).send(espacios) 
+        res.status(200).send(espaciosTmp) 
     } else {
         switch (spaces) {
             case stateSpaces.FREE:
-                res.status(200).send(espacios.filter(e => e.state == stateSpaces.FREE))
+                res.status(200).send(espaciosTmp.filter(e => e.state == stateSpaces.FREE))
             case stateSpaces.INUSE:
-                res.status(200).send(espacios.filter(e => e.state == stateSpaces.INUSE))
+                res.status(200).send(espaciosTmp.filter(e => e.state == stateSpaces.INUSE))
             default:
                 res.status(409).send({
                     state: spaces,
@@ -140,8 +144,8 @@ app.delete('/spaces/:id', (req, res) => {
 })
 
 
-app.get('/reservations', (req, res) => {
-    res.status(200).send(reservaciones)
+app.get('/reservations', paginatedResults(reservaciones), (req, res) => {
+    res.status(200).send(res.paginatedResults)
 })
 
 
@@ -210,6 +214,15 @@ app.all('/spaces/:id', (req, res) => {
     })
 })
 
+/**
+ * Funcion para la paginacion simple
+ * 
+ * @param {*} object 
+ * @returns 
+ */
+function paginatedResults(object){
+    return (req, res, next) => {
+        var objectTmp = object;
 const sslServer = https.createServer(
     {
         key: fs.readFileSync("./certificado/cert.key"),
@@ -218,12 +231,97 @@ const sslServer = https.createServer(
     app
 )
 
+        const page = parseInt(req.query.page)
+        const limit = parseInt(req.query.limit)
 sslServer.listen(
     3443,
     () => console.log("secure listening in https://localhost:3443")
 )
 
+        const fields = req.query;
+        console.log(fields);
+        const startIndex = (page-1)*limit
+        const endIndex = page *limit
+
+        var result = {}
+
+        if (fields.placa){
+            objectTmp =  object.filter(function(obj) {
+                return obj.placa == req.query.placa;
+            });
+        }
+
+        if (fields.hora){
+            objectTmp =  object.filter(function(obj) {
+                return obj.hora == req.query.hora;
+            });
+        }
+
+        if (fields.idEspacio){
+            if (fields.idEspacio.gte){
+                objectTmp =  object.filter(function(obj) {
+                return obj.idEspacio >= parseInt(fields.idEspacio.gte); 
+            });} 
+        }
+
+        if (fields.idEspacio){
+            if (fields.idEspacio.lte){
+                objectTmp =  object.filter(function(obj) {
+                return obj.idEspacio <= parseInt(fields.idEspacio.lte); 
+            });} 
+        }
+
+        if (fields.state){
+            objectTmp =  object.filter(function(obj) {
+                return obj.state == req.query.state;
+            });
+        }
+
+        if (fields.tipo){
+            objectTmp =  object.filter(function(obj) {
+                return obj.tipo == req.query.tipo;
+            });
+        }
+
+        if (fields.id){
+            if (fields.id.gte){
+                objectTmp =  object.filter(function(obj) {
+                return obj.id >= parseInt(fields.id.gte); 
+            });} 
+        }
+
+        if (fields.id){
+            if (fields.id.lte){
+                objectTmp =  object.filter(function(obj) {
+                return obj.id <= parseInt(fields.id.lte); 
+            });} 
+        }
+
+        if (endIndex < object.length){
+            result.next = {
+                page : page +1,
+                limit : limit
+            }
+        }
+
+        if (startIndex > 0){
+            result.prev = {
+                page:page -1,
+                limit: limit
+            }
+        }
+
+        if (!page || !limit){
+            result.results = objectTmp
+        } else {
+            result.results = objectTmp.slice(startIndex, endIndex);
+        }
+        res.paginatedResults = result
+        next()
+    }
+}
+
 app.listen(
     PORT,
-    () => console.log(`I'm listening on http://localhost:${PORT}`)
+    () => console.log(`I'm a wild creature listening on http://localhost:${PORT}`)
 )
