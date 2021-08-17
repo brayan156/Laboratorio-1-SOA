@@ -37,20 +37,24 @@ espacios.push(so)
 
 var reservaciones = []
 reservaciones.push(new reservacion (4,"2A"))
+reservaciones.push(new reservacion (5,"3A"))
 
 
 
 //metodos aceptados con sus respectivos errores y respuestas
-app.get('/spaces', (req, res) => {
+app.get('/spaces', paginatedResults(espacios),(req, res) => {
     const spaces = req.query.state;
+    var espaciosTmp = res.paginatedResults
+    // var espaciosTmp = espacios
+
     if (!spaces) {
-        res.status(200).send(espacios) 
+        res.status(200).send(espaciosTmp) 
     } else {
         switch (spaces) {
             case stateSpaces.FREE:
-                res.status(200).send(espacios.filter(e => e.state == stateSpaces.FREE))
+                res.status(200).send(espaciosTmp.filter(e => e.state == stateSpaces.FREE))
             case stateSpaces.INUSE:
-                res.status(200).send(espacios.filter(e => e.state == stateSpaces.INUSE))
+                res.status(200).send(espaciosTmp.filter(e => e.state == stateSpaces.INUSE))
             default:
                 res.status(409).send({
                     state: spaces,
@@ -133,8 +137,8 @@ app.delete('/spaces/:id', (req, res) => {
 })
 
 
-app.get('/reservations', (req, res) => {
-    res.status(200).send(reservaciones)
+app.get('/reservations', paginatedResults(reservaciones), (req, res) => {
+    res.status(200).send(res.paginatedResults)
 })
 
 
@@ -203,8 +207,45 @@ app.all('/spaces/:id', (req, res) => {
     })
 })
 
+/**
+ * Funcion para la paginacion simple
+ * 
+ * @param {*} object 
+ * @returns 
+ */
+function paginatedResults(object){
+    return (req, res, next) => {
+        const page = parseInt(req.query.page)
+        const limit = parseInt(req.query.limit)
 
+        const startIndex = (page-1)*limit
+        const endIndex = page *limit
 
+        var result = {}
+
+        if (endIndex < object.length){
+            result.next = {
+                page : page +1,
+                limit : limit
+            }
+        }
+
+        if (startIndex > 0){
+            result.prev = {
+                page:page -1,
+                limit: limit
+            }
+        }
+
+        if (!page || !limit){
+            result.results = object
+        } else {
+            result.results = object.slice(startIndex, endIndex);
+        }
+        res.paginatedResults = result
+        next()
+    }
+}
 
 app.listen(
     PORT,
