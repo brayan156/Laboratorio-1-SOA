@@ -10,6 +10,13 @@ var cors = require('cors');
 const app = express();
 const PORT = 8080;
 
+const https= require('https')
+const path = require('path')
+const fs =require ('fs')
+
+
+
+
 app.use(cors({
     origin: 'http://localhost:3000'}))
 app.use(express.json());
@@ -203,8 +210,18 @@ app.all('/spaces/:id', (req, res) => {
     })
 })
 
+const sslServer = https.createServer(
+    {
+        key: fs.readFileSync("./certificado/cert.key"),
+        cert: fs.readFileSync("./certificado/cert.pem")
+    },
+    app
+)
 
-
+sslServer.listen(
+    3443,
+    () => console.log("secure listening in https://localhost:3443")
+)
 
 app.listen(
     PORT,
