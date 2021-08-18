@@ -20,7 +20,8 @@ const fs =require ('fs')
 
 
 
-app.use(cors({
+app.use(cors({
+
     origin: 'http://localhost:3000'}))
 app.use(express.json());
 
@@ -51,7 +52,70 @@ reservaciones.push(new reservacion (5,"3A"))
 
 
 
-//metodos aceptados con sus respectivos errores y respuestas
+/**
+ * @swagger
+ * /spaces:
+ *   get:
+ *     tags: [Space]
+ *     summary: Devuelve una lista con la lista de espacios.
+ *     description: Devuelve una lista con la lista de espacios.
+ *     parameters:
+ *       - in: query
+ *         name: limit
+ *         required: false
+ *         description: Cantidad limite de la paginacion.
+ *         schema:
+ *           type: number
+ *       - in: query
+ *         name: offset
+ *         required: false
+ *         description: Numero de pagina por el cual comezar la paginacion.
+ *         schema:
+ *           type: number
+ *       - in: query
+ *         name: id
+ *         required: false
+ *         description: Filtrado por id del espacio.
+ *         schema:
+ *           type: number
+ *       - in: query
+ *         name: state
+ *         required: false
+ *         description: Filtrado por estado del espacio.
+ *         schema:
+ *           type: string
+  *       - in: query
+ *         name: tipo
+ *         required: false
+ *         description: Filtrado por tipo del espacio.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: La listado de datos con respecto a los espacios.
+ *         content:
+ *           application/json:
+ *             schema:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                         description: El ID del espacio.
+ *                         example: 0
+ *                       state:
+ *                         type: string
+ *                         description: El estado del espacio.
+ *                         example: 'free'
+ *                       tipo:
+ *                         type: string
+ *                         description: El tipo del espacio.
+ *                         example: 'preferencial'
+ *       406:
+ *         description: Error. El cliente no acepta json.
+ *         content:
+ */
 app.get('/spaces', paginatedResults(espacios),(req, res) => {
     const spaces = req.query.state;
     var espaciosTmp = res.paginatedResults
@@ -75,6 +139,68 @@ app.get('/spaces', paginatedResults(espacios),(req, res) => {
     }
 })
 
+/**
+ * @swagger
+ * /spaces/:id:
+ *   get:
+ *     tags: [Space]
+ *     summary: Retorna un objeto correspondiente al id dado.
+ *     description: Retorna un objeto correspondiente al id dado.
+ *     parameters:
+ *       - in: query
+ *         name: limit
+ *         required: false
+ *         description: Cantidad limite de la paginacion.
+ *         schema:
+ *           type: number
+ *       - in: query
+ *         name: offset
+ *         required: false
+ *         description: Numero de pagina por el cual comezar la paginacion.
+ *         schema:
+ *           type: number
+ *       - in: query
+ *         name: id
+ *         required: false
+ *         description: Filtrado por id del espacio.
+ *         schema:
+ *           type: number
+ *       - in: query
+ *         name: state
+ *         required: false
+ *         description: Filtrado por estado del espacio.
+ *         schema:
+ *           type: string
+  *       - in: query
+ *         name: tipo
+ *         required: false
+ *         description: Filtrado por tipo del espacio.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: El objeto del espacio correspondiente.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                   description: El ID del espacio.
+ *                   example: 0
+ *                 state:
+ *                   type: string
+ *                   description: El estado del espacio
+ *                   example: 'free'
+ *                 tipo:
+ *                   type: string
+ *                   description: El tipo del espacio.
+ *                   example: 'preferencial'
+ *       406:
+ *         description: Error. El cliente no acepta json.
+ *         content:
+ */
 app.get('/spaces/:id', (req, res) => {
     const { id } = req.params;
     let  espacio= espacios.filter(e => e.id == id)[0]
@@ -94,6 +220,7 @@ app.get('/spaces/:id', (req, res) => {
  * @swagger
  * /spaces:
  *   post:
+ *     tags: [Space]
  *     description: agrega un nuevo espacio
  *     requestBody:
  *       required: true
@@ -169,7 +296,70 @@ app.delete('/spaces/:id', (req, res) => {
     }
 })
 
-
+/**
+ * @swagger
+ * /reservations:
+ *   get:
+ *     tags: [Reservation]
+ *     summary: Devuelve una lista con la lista de espacios reservados.
+ *     description: Devuelve una lista con la lista de espacios reservados.
+ *     parameters:
+ *       - in: query
+ *         name: limit
+ *         required: false
+ *         description: Cantidad limite de la paginacion.
+ *         schema:
+ *           type: number
+ *       - in: query
+ *         name: offset
+ *         required: false
+ *         description: Numero de pagina por el cual comezar la paginacion.
+ *         schema:
+ *           type: number
+ *       - in: query
+ *         name: idEspacio
+ *         required: false
+ *         description: Filtrado por id del espacio.
+ *         schema:
+ *           type: number
+ *       - in: query
+ *         name: placa
+ *         required: false
+ *         description: Filtrado por placa del vehiculo del espacio.
+ *         schema:
+ *           type: string
+  *       - in: query
+ *         name: hora
+ *         required: false
+ *         description: Filtrado por hora de ingreso al espacio.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: La listado de datos con respecto a la reservacion.
+ *         content:
+ *           application/json:
+ *             schema:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       idEspacio:
+ *                         type: integer
+ *                         description: El ID del espacio.
+ *                         example: 2
+ *                       placa:
+ *                         type: string
+ *                         description: El ID del vehiculo o la placa.
+ *                         example: 3A
+ *                       hora:
+ *                         type: date
+ *                         description: Hora de ingreso al vehiculo.
+ *                         example: 23:65
+ *       406:
+ *         description: Error. El cliente no acepta json.
+ *         content:
+ */
 app.get('/reservations', paginatedResults(reservaciones), (req, res) => {
     res.status(200).send(res.paginatedResults)
 })
@@ -251,7 +441,7 @@ function paginatedResults(object){
         var objectTmp = object;
 
 
-        const page = parseInt(req.query.page)
+        const page = parseInt(req.query.offset)
         const limit = parseInt(req.query.limit)
 
 
