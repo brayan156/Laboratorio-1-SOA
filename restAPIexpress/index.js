@@ -143,6 +143,7 @@ app.get('/spaces', paginatedResults(espacios),(req, res) => {
  * @swagger
  * /spaces/{id}:
  *   get:
+ *     tags: [Space]
  *     description: agrega un nuevo espacio
  *     parameters:
  *       - in: path
@@ -217,6 +218,7 @@ app.post('/spaces', (req, res) => {
  * @swagger
  * /spaces/{id}:
  *   put:
+ *     tags: [Space]
  *     description: modifica el espacio solicitado
  *     parameters:
  *       - in: path
@@ -282,6 +284,7 @@ app.put('/spaces/:id', (req, res) => {
  * @swagger
  * /spaces/{id}:
  *   delete:
+ *     tags: [Space]
  *     description: elimina el espacio solicitado
  *     parameters:
  *       - in: path
@@ -387,6 +390,7 @@ app.get('/reservations', paginatedResults(reservaciones), (req, res) => {
  * @swagger
  * /reservations:
  *   post:
+ *     tags: [Reservation]
  *     description: agrega una nueva reservacion a un espacio libre
  *     requestBody:
  *       required: true
@@ -436,6 +440,7 @@ app.post('/reservations', (req, res) => {
  * @swagger
  * /reservations/{id}:
  *   delete:
+ *     tags: [Reservation]
  *     description: elimina la reservacion solicitada
  *     parameters:
  *       - in: path
