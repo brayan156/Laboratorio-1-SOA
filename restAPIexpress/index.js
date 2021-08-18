@@ -159,29 +159,7 @@ app.get('/spaces', paginatedResults(espacios),(req, res) => {
     }
 })
 
-/**
- * @swagger
- *    components:
- *        schemas:
- *            Space:
- *                type: object
- *                required:
- *                    - id
- *                    - status
- *                properties:
- *                       id:
- *                         type: integer
- *                         description: El ID del espacio.
- *                         example: 2
- *                       state:
- *                         type: string
- *                         description: El estado del espacio.
- *                         example: free
- *                       tipo:
- *                          type: string
- *                          description: Tipo del espacio
- *                          example: Preferencial
- */
+
 /**
  * @swagger
  * /spaces/{id}:
