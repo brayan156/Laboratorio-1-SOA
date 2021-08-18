@@ -72,14 +72,14 @@ class App extends React.Component {
     const rawResponse = await fetch("http://localhost:8080/spaces");
     const parsedResponse = await rawResponse.json();
     console.log('espacios: ', parsedResponse);
-    return parsedResponse;
+    return parsedResponse.results;
   }
 
   async getReservations() {
     const rawResponse = await fetch("http://localhost:8080/reservations");
     const parsedResponse = await rawResponse.json();
     console.log("reservaciones ", parsedResponse);
-    return parsedResponse;
+    return parsedResponse.results;
   }
 
   async getSpace(id) {
