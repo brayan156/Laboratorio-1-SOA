@@ -49,8 +49,29 @@ espacios.push(so)
 var reservaciones = []
 reservaciones.push(new reservacion (4,"2A"))
 
-
-
+/**
+ * @swagger
+ *    components:
+ *        schemas:
+ *            Space:
+ *                type: object
+ *                required:
+ *                    - id
+ *                    - status
+ *                properties:
+ *                       id:
+ *                         type: integer
+ *                         description: El ID del espacio.
+ *                         example: 2
+ *                       state:
+ *                         type: string
+ *                         description: El estado del espacio.
+ *                         example: free
+ *                       tipo:
+ *                          type: string
+ *                          description: Tipo del espacio
+ *                          example: Preferencial
+ */
 /**
  * @swagger
  * /spaces:
@@ -138,7 +159,29 @@ app.get('/spaces', paginatedResults(espacios),(req, res) => {
     }
 })
 
-
+/**
+ * @swagger
+ *    components:
+ *        schemas:
+ *            Space:
+ *                type: object
+ *                required:
+ *                    - id
+ *                    - status
+ *                properties:
+ *                       id:
+ *                         type: integer
+ *                         description: El ID del espacio.
+ *                         example: 2
+ *                       state:
+ *                         type: string
+ *                         description: El estado del espacio.
+ *                         example: free
+ *                       tipo:
+ *                          type: string
+ *                          description: Tipo del espacio
+ *                          example: Preferencial
+ */
 /**
  * @swagger
  * /spaces/{id}:
@@ -314,6 +357,28 @@ app.delete('/spaces/:id', (req, res) => {
     }
 })
 
+/**
+ * @swagger
+ *    components:
+ *        schemas:
+ *            Reservation:
+ *                type: object
+ *                required:
+ *                    - placa
+ *                properties:
+ *                       idEspacio:
+ *                         type: integer
+ *                         description: El ID del espacio.
+ *                         example: 2
+ *                       placa:
+ *                         type: string
+ *                         description: La placa del vehiculo.
+ *                         example: 2A
+ *                       hora:
+ *                          type: string
+ *                          description: Hora de ingreso
+ *                          example: 23:59
+ */
 /**
  * @swagger
  * /reservations:
