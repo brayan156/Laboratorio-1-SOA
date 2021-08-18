@@ -47,7 +47,6 @@ espacios.push(so)
 
 var reservaciones = []
 reservaciones.push(new reservacion (4,"2A"))
-reservaciones.push(new reservacion (5,"3A"))
 
 
 
@@ -75,6 +74,27 @@ app.get('/spaces', paginatedResults(espacios),(req, res) => {
     }
 })
 
+
+/**
+ * @swagger
+ * /spaces/{id}:
+ *   get:
+ *     description: agrega un nuevo espacio
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: el id del espacio a devolver
+ *         schema:
+ *           type: integer
+ *           example: 2
+ *     responses:
+ *       200:
+ *         description: devuelve el espacio solicitado
+ *       409:
+ *         description: espacio no encontrado
+ */
+
 app.get('/spaces/:id', (req, res) => {
     const { id } = req.params;
     let  espacio= espacios.filter(e => e.id == id)[0]
@@ -89,7 +109,6 @@ app.get('/spaces/:id', (req, res) => {
 
 
 //metodo post de spaces: recibe en el body el tipo del objeto de la forma tipo:"tipo de espacio"
-
 /**
  * @swagger
  * /spaces:
@@ -107,7 +126,7 @@ app.get('/spaces/:id', (req, res) => {
  *                 description: tipo de espacio ejemplo regular, preferencial, profesor.
  *                 example: regular
  *     responses:
- *       201:
+ *       200:
  *         description: el espacio se crea exitosamente
  *       400:
  *         description: se debe enviar un tipo
@@ -129,6 +148,48 @@ app.post('/spaces', (req, res) => {
 })
 
 //metodo put de spaces: requiere del id del objeto a modificar y el objeto completo con las modificaciones realizadas
+/**
+ * @swagger
+ * /spaces/{id}:
+ *   put:
+ *     description: modifica el espacio solicitado
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: el id del espacio a modificar
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               id:
+ *                 type: integer
+ *                 description: id del espacio
+ *                 example: 1
+ *               tipo:
+ *                 type: string
+ *                 description: tipo de espacio ejemplo regular, preferencial, profesor.
+ *                 example: preferencial
+ *               state:
+ *                 type: string
+ *                 description: estado puede ser free o in-use.
+ *                 enum: [free, in-use]
+ *                 example: free
+ *     responses:
+ *       200:
+ *         description: el espacio ha sido modificado
+ *       400:
+ *         description: el id enviado y el id del objeto deben coincidir
+ *       409:
+ *         description: espacio no encontrado
+ */
+
 app.put('/spaces/:id', (req, res) => {
     const { id } = req.params;
     const espacio_modificado = req.body
@@ -139,7 +200,7 @@ app.put('/spaces/:id', (req, res) => {
     } else {
         let index = espacios.findIndex(e => e.id == id)
         if (index==-1) {
-            res.status(404).send({
+            res.status(409).send({
                 respuesta: "espacio no encontrado"
             })
         } else {
@@ -152,6 +213,25 @@ app.put('/spaces/:id', (req, res) => {
     }
 })
 
+/**
+ * @swagger
+ * /spaces/{id}:
+ *   delete:
+ *     description: elimina el espacio solicitado
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: el id del espacio a eliminar
+ *         schema:
+ *           type: integer
+ *           example: 2
+ *     responses:
+ *       200:
+ *         description: el espacio se elimina correctamente
+ *       409:
+ *         description: el espacio esta ocupado || el espacio esta ocupado,no se puede eliminar
+ */
 app.delete('/spaces/:id', (req, res) => {
     const { id } = req.params;
     let index = espacios.findIndex(e => e.id == id)
@@ -175,7 +255,30 @@ app.get('/reservations', paginatedResults(reservaciones), (req, res) => {
 })
 
 
-//metodo post de reservation: en el body se debe enviar el atributo placa:"numero de placa"
+/**
+ * @swagger
+ * /reservations:
+ *   post:
+ *     description: agrega una nueva reservacion a un espacio libre
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               placa:
+ *                 type: string
+ *                 description: placa del auto a estacionar
+ *                 example: 3MS2
+ *     responses:
+ *       200:
+ *         description: la reservacion se realiza exitosamente
+ *       400:
+ *         description: debe enviar la placa del vehiculo
+ *       409:
+ *         description: no hay espacios disponibles
+ */
 app.post('/reservations', (req, res) => {
     const placa = req.body.placa;
     if (!placa) {
@@ -201,13 +304,31 @@ app.post('/reservations', (req, res) => {
     }
 })
 
-//elimina la reservacion por medio del id del espacio asignado
+/**
+ * @swagger
+ * /reservations/{id}:
+ *   delete:
+ *     description: elimina la reservacion solicitada
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: el id de la reservacion a eliminar
+ *         schema:
+ *           type: integer
+ *           example: 4
+ *     responses:
+ *       200:
+ *         description: la reservacion se elimina correctamente
+ *       409:
+ *         description: espacio no encontrado
+ */
 app.delete('/reservations/:id', (req, res) => {
     const { id } = req.params;
     let index = reservaciones.findIndex(r => r.idEspacio == id)
     if (index == -1) {
         res.status(409).send({
-            respuesta: "espacio no encontrado"
+            respuesta: "reservacion no encontrada"
         })
     } else {
 
